@@ -20,44 +20,23 @@ def cross_entropy_loss(y_pred, y_true):
     return -np.mean(np.sum(y_true * np.log(y_pred), axis=-1))
 
 
-class RNNCell:
-    """
-    Vanilla RNN Cell.
-    h_t = tanh(W_xh * x_t + W_hh * h_{t-1} + b_h)
-    """
-    
+class RNNCell:  
     def __init__(self, input_size, hidden_size):
-        """Initialize RNN cell with Xavier initialization."""
         self.input_size = input_size
         self.hidden_size = hidden_size
         
-        # Input to hidden weights
+        
         self.W_xh = np.random.randn(input_size, hidden_size) * np.sqrt(2.0 / (input_size + hidden_size))
-        # Hidden to hidden weights
         self.W_hh = np.random.randn(hidden_size, hidden_size) * np.sqrt(2.0 / (hidden_size * 2))
-        # Bias
         self.b_h = np.zeros((1, hidden_size))
         
-        # Gradients
         self.dW_xh = np.zeros_like(self.W_xh)
         self.dW_hh = np.zeros_like(self.W_hh)
         self.db_h = np.zeros_like(self.b_h)
         
-        # Cache for backprop
         self.cache = []
     
     def forward(self, x_sequence, h_init=None):
-        """
-        Forward pass through the RNN for a sequence.
-        
-        Args:
-            x_sequence: Input sequence of shape (batch_size, seq_length, input_size)
-            h_init: Initial hidden state (batch_size, hidden_size)
-        
-        Returns:
-            h_all: All hidden states (batch_size, seq_length, hidden_size)
-            h_final: Final hidden state (batch_size, hidden_size)
-        """
         batch_size, seq_length, _ = x_sequence.shape
         
         if h_init is None:
@@ -87,16 +66,6 @@ class RNNCell:
         return h_all, h_final
     
     def backward(self, dh_all, dh_final=None):
-        """
-        Backward pass through time (BPTT).
-        
-        Args:
-            dh_all: Gradient from all hidden states (batch_size, seq_length, hidden_size)
-            dh_final: Additional gradient from final hidden state (batch_size, hidden_size)
-        
-        Returns:
-            dx_sequence: Gradient w.r.t input sequence
-        """
         batch_size = dh_all.shape[0]
         seq_length = len(self.cache)
         
@@ -203,7 +172,7 @@ class RNN:
         # Backprop through output layer
         dh_final = self.output_layer.backward(y_pred, y_true, learning_rate)
         
-        # Create dh_all with zeros (we only use final hidden state for classification)
+        
         batch_size = y_pred.shape[0]
         seq_length = len(self.rnn_cell.cache)
         dh_all = np.zeros((batch_size, seq_length, self.rnn_cell.hidden_size))
@@ -261,14 +230,6 @@ class RNN:
 
 
 def create_sequence_dataset(n_samples=500, seq_length=10, n_classes=3):
-    """
-    Create a synthetic sequence classification dataset.
-    
-    Classes:
-    0 - Increasing trend (positive slope)
-    1 - Decreasing trend (negative slope)
-    2 - Oscillating pattern
-    """
     np.random.seed(42)
     X = np.zeros((n_samples, seq_length, 1))
     y = np.zeros(n_samples, dtype=int)
@@ -338,8 +299,8 @@ def main():
     X, y = create_sequence_dataset(n_samples=600, seq_length=seq_length, n_classes=n_classes)
     y_one_hot = one_hot_encode(y, n_classes=n_classes)
     
-    print(f"   Dataset shape: X={X.shape}, y={y_one_hot.shape}")
-    print("   Classes: Increasing, Decreasing, Oscillating patterns")
+    print(f"Dataset shape: X={X.shape}, y={y_one_hot.shape}")
+    print("Classes: Increasing, Decreasing, Oscillating patterns")
     
     # Shuffle and split into train/test
     indices = np.random.permutation(len(X))

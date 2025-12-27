@@ -88,27 +88,20 @@ class DenseLayer:
 
 
 class ANN:
-    """Artificial Neural Network."""
-    
     def __init__(self):
         self.layers = []
     
     def add_layer(self, layer):
-        """Add a layer to the network."""
         self.layers.append(layer)
     
     def forward(self, x):
-        """Forward pass through all layers."""
         for layer in self.layers:
             x = layer.forward(x)
         return x
     
     def backward(self, y_pred, y_true, learning_rate):
-        """Backward pass through all layers."""
-        # Gradient of cross-entropy with softmax
         d_output = y_pred - y_true
         
-        # Backpropagate through layers in reverse
         for layer in reversed(self.layers):
             d_output = layer.backward(d_output, learning_rate)
     
@@ -118,7 +111,6 @@ class ANN:
         history = {'loss': [], 'accuracy': []}
         
         for epoch in range(epochs):
-            # Shuffle data
             indices = np.random.permutation(n_samples)
             X_shuffled = X[indices]
             y_shuffled = y[indices]

@@ -22,20 +22,18 @@ def cross_entropy_loss(y_pred, y_true):
 
 class Conv2D:    
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
-        """Initialize convolutional layer."""
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
         
-        # Initialize weights using He initialization
         self.weights = np.random.randn(
             out_channels, in_channels, kernel_size, kernel_size
         ) * np.sqrt(2.0 / (in_channels * kernel_size * kernel_size))
         self.biases = np.zeros(out_channels)
         
-        # Cache for backpropagation
+        
         self.input = None
         self.output = None
     
@@ -55,7 +53,7 @@ class Conv2D:
         else:
             x_padded = x
         
-        # Initialize output
+        
         self.output = np.zeros((batch_size, self.out_channels, out_height, out_width))
         
         # Perform convolution
@@ -129,10 +127,6 @@ class Conv2D:
         
         return d_input
 
-
-# ============================================================================
-# Max Pooling Layer
-# ============================================================================
 
 class MaxPool2D:
     """Max pooling layer."""
